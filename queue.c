@@ -413,10 +413,57 @@ int q_descend(struct list_head *head)
     return q_size(head);
 }
 
-/* Merge all the queues into one sorted queue, which is in ascending/descending
- * order */
+/* Merge all the queues into one sorted queue, which is in
+ * ascending/descending order */
+
+int merge_queue(struct list_head *first, struct list_head *second)
+{
+    if (!first || !second) {
+        return 0;
+    }
+
+    LIST_HEAD(tmp);
+    while (!list_empty(first) && !list_empty(second)) {
+        element_t *element_1 = list_first_entry(first, element_t, list);
+        element_t *element_2 = list_first_entry(second, element_t, list);
+        element_t *element_min = strcmp(element_1->value, element_2->value) < 0
+                                     ? element_1
+                                     : element_2;
+        list_move_tail(&element_min->list, &tmp);
+    }
+    list_splice_tail_init(first, &tmp);
+    list_splice_tail_init(second, &tmp);
+    list_splice(&tmp, first);
+    return q_size(first);
+}
+
 int q_merge(struct list_head *head, bool descend)
 {
     // https://leetcode.com/problems/merge-k-sorted-lists/
-    return 0;
+    if (!head || list_empty(head)) {
+        return 0;
+    } else if (list_is_singular(head)) {
+        return q_size(list_first_entry(head, queue_contex_t, chain)->q);
+    }
+
+    int size = q_size(head);
+    int count = (size % 2) ? size / 2 + 1 : size / 2;
+    int queue_size = 0;
+
+    for (int i = 0; i < count; i++) {
+        queue_contex_t *first = list_first_entry(head, queue_contex_t, chain);
+        queue_contex_t *second =
+            list_entry(first->chain.next, queue_contex_t, chain);
+
+        while (!list_empty(first->q) && !list_empty(second->q)) {
+            queue_size = merge_queue(first->q, second->q);
+            list_move_tail(&second->chain, head);
+            first = list_entry(first->chain.next, queue_contex_t, chain);
+            second = list_entry(first->chain.next, queue_contex_t, chain);
+        }
+    }
+    if (descend) {
+        q_reverse(head);
+    }
+    return queue_size;
 }
