@@ -279,6 +279,11 @@ static bool do_help(int argc, char *argv[])
     return true;
 }
 
+static bool do_hello(int arg, char *argv[])
+{
+    return (bool) printf("Hello,world\n");
+}
+
 static bool do_comment_cmd(int argc, char *argv[])
 {
     if (echo)
@@ -438,6 +443,7 @@ void init_cmd()
                 "Display or set options. See 'Options' section for details",
                 "[name val]");
     ADD_COMMAND(quit, "Exit program", "");
+    ADD_COMMAND(hello, "Print hello message", "");
     ADD_COMMAND(source, "Read commands from source file", "file");
     ADD_COMMAND(log, "Copy output to file", "file");
     ADD_COMMAND(time, "Time command execution", "cmd arg ...");
