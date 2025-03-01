@@ -913,6 +913,50 @@ static bool do_merge(int argc, char *argv[])
     return ok && !error_check();
 }
 
+// static bool do_shuffle(int argc, char *argv[])
+// {
+//     if (argc != 1 && argc != 2) {
+//         report(1, "%s takes 0-1 arguments", argv[0]);
+//         return false;
+//     }
+
+//     int reps = 1;
+//     bool ok = true;
+//     if (argc == 2) {
+//         if (!get_int(argv[1], &reps))
+//             report(1, "Invalid number of calls to size '%s'", argv[2]);
+//     }
+
+//     if (!current || !current->q)
+//         report(3, "Warning: Calling size on null queue");
+//     error_check();
+
+//     if (current && exception_setup(true)) {
+//         for (int r = 0; ok && r < reps; r++) {
+//             q_shuffle(current->q);
+//             ok = ok && !error_check();
+//         }
+//     }
+//     exception_cancel();
+
+//     if (current && ok) {
+//         int expected_size = current->size;
+//         int actual_size = q_size(current->q);
+
+//         if (expected_size != actual_size) {
+//             report(1,
+//                    "ERROR: Queue size mismatch after shuffle. Expected: %d, "
+//                    "Got: %d",
+//                    expected_size, actual_size);
+//             ok = false;
+//         }
+//     }
+
+//     q_show(3);
+
+//     return ok && !error_check();
+// }
+
 static bool is_circular()
 {
     struct list_head *cur = current->q->next;
@@ -1086,6 +1130,7 @@ static void console_init()
     ADD_COMMAND(dedup, "Delete all nodes that have duplicate string", "");
     ADD_COMMAND(merge, "Merge all the queues into one sorted queue", "");
     ADD_COMMAND(swap, "Swap every two adjacent nodes in queue", "");
+    // ADD_COMMAND(shuffle, "Shuffle the nodes in queue", "");
     ADD_COMMAND(ascend,
                 "Remove every node which has a node with a strictly less "
                 "value anywhere to the right side of it",

@@ -146,6 +146,32 @@ int q_size(struct list_head *head)
     return len;
 }
 
+/* Shuffle the node in the queue*/
+void q_shuffle(struct list_head *head)
+{
+    int len = q_size(head);
+
+    if (len <= 1) {
+        return;
+    }
+
+    for (int remain = len; remain > 0; remain--) {
+        int rand_num = rand() % remain;
+
+        struct list_head *node;
+
+        list_for_each (node, head) {
+            if (rand_num == 0) {
+                break;
+            }
+            rand_num--;
+        }
+
+        list_del(node);
+        list_add_tail(node, head);
+    }
+}
+
 /* Delete the middle node in queue */
 bool q_delete_mid(struct list_head *head)
 {
